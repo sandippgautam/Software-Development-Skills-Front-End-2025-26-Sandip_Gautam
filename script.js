@@ -1,64 +1,57 @@
-// ── Navbar scroll shadow ─────────────────────────────────────────────────────
-const navbar = document.querySelector('.navbar');
-window.addEventListener('scroll', () => {
-  navbar.classList.toggle('scrolled', window.scrollY > 40);
-});
-
-// ── Mobile hamburger menu ─────────────────────────────────────────────────────
+// Hamburger menu
 const hamburger = document.getElementById('hamburger');
-const navLinks  = document.getElementById('navLinks');
+const navLinks = document.getElementById('navLinks');
 
-hamburger.addEventListener('click', () => {
-  hamburger.classList.toggle('active');
-  navLinks.classList.toggle('open');
+hamburger.addEventListener('click', function() {
+  this.classList.toggle('open');
+  navLinks.classList.toggle('show');
 });
 
-// Close menu when a link is clicked
-navLinks.querySelectorAll('a').forEach(link => {
-  link.addEventListener('click', () => {
-    hamburger.classList.remove('active');
-    navLinks.classList.remove('open');
+// Close nav when a link is clicked
+navLinks.querySelectorAll('a').forEach(function(link) {
+  link.addEventListener('click', function() {
+    hamburger.classList.remove('open');
+    navLinks.classList.remove('show');
   });
 });
 
-// ── FAQ Accordion ─────────────────────────────────────────────────────────────
-document.querySelectorAll('.accordion-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const item    = btn.closest('.accordion-item');
-    const content = item.querySelector('.accordion-content');
-    const isOpen  = item.classList.contains('active');
+// Accordion FAQ
+var accItems = document.querySelectorAll('.acc-item');
 
-    // Close all
-    document.querySelectorAll('.accordion-item').forEach(i => {
-      i.classList.remove('active');
-      i.querySelector('.accordion-content').style.maxHeight = null;
+accItems.forEach(function(item) {
+  var btn = item.querySelector('.acc-btn');
+  var content = item.querySelector('.acc-content');
+
+  btn.addEventListener('click', function() {
+    var isOpen = item.classList.contains('open');
+
+    // close all
+    accItems.forEach(function(i) {
+      i.classList.remove('open');
+      i.querySelector('.acc-content').style.maxHeight = null;
     });
 
-    // Open clicked (unless it was already open)
     if (!isOpen) {
-      item.classList.add('active');
+      item.classList.add('open');
       content.style.maxHeight = content.scrollHeight + 'px';
     }
   });
 });
 
-// ── Image Slideshow ───────────────────────────────────────────────────────────
-const slides    = document.querySelectorAll('.slide');
-const dotsWrap  = document.getElementById('slideDots');
-let current     = 0;
-let slideTimer;
+// Slideshow
+var slides = document.querySelectorAll('.slide');
+var dotsContainer = document.getElementById('dots');
+var current = 0;
+var timer;
 
-// Build dots
-slides.forEach((_, i) => {
-  const dot = document.createElement('button');
-  dot.classList.add('dot');
-  dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
-  if (i === 0) dot.classList.add('active');
-  dot.addEventListener('click', () => goTo(i));
-  dotsWrap.appendChild(dot);
+slides.forEach(function(_, i) {
+  var dot = document.createElement('button');
+  dot.className = 'dot' + (i === 0 ? ' active' : '');
+  dot.addEventListener('click', function() { goTo(i); });
+  dotsContainer.appendChild(dot);
 });
 
-function getDots() { return dotsWrap.querySelectorAll('.dot'); }
+function getDots() { return dotsContainer.querySelectorAll('.dot'); }
 
 function goTo(index) {
   slides[current].classList.remove('active');
@@ -68,45 +61,29 @@ function goTo(index) {
   getDots()[current].classList.add('active');
 }
 
-function nextSlide() { goTo(current + 1); }
-function prevSlide() { goTo(current - 1); }
-
-document.getElementById('nextSlide').addEventListener('click', () => {
-  clearInterval(slideTimer);
-  nextSlide();
+document.getElementById('prevBtn').addEventListener('click', function() {
+  clearInterval(timer);
+  goTo(current - 1);
   startTimer();
 });
 
-document.getElementById('prevSlide').addEventListener('click', () => {
-  clearInterval(slideTimer);
-  prevSlide();
+document.getElementById('nextBtn').addEventListener('click', function() {
+  clearInterval(timer);
+  goTo(current + 1);
   startTimer();
 });
 
 function startTimer() {
-  slideTimer = setInterval(nextSlide, 4000);
+  timer = setInterval(function() { goTo(current + 1); }, 4500);
 }
 startTimer();
 
-// ── Contact form ──────────────────────────────────────────────────────────────
-function handleSubmit(e) {
+// Contact form
+function submitForm(e) {
   e.preventDefault();
-  const success = document.getElementById('formSuccess');
-  success.style.display = 'block';
+  document.getElementById('formMsg').style.display = 'block';
   e.target.reset();
-  setTimeout(() => { success.style.display = 'none'; }, 4000);
+  setTimeout(function() {
+    document.getElementById('formMsg').style.display = 'none';
+  }, 4000);
 }
-
-// ── Smooth active nav highlight on scroll ────────────────────────────────────
-const sections = document.querySelectorAll('section[id]');
-window.addEventListener('scroll', () => {
-  const scrollY = window.scrollY + 100;
-  sections.forEach(section => {
-    const link = document.querySelector(`.nav-links a[href="#${section.id}"]`);
-    if (!link) return;
-    if (scrollY >= section.offsetTop && scrollY < section.offsetTop + section.offsetHeight) {
-      document.querySelectorAll('.nav-links a').forEach(a => a.style.color = '');
-      link.style.color = 'var(--primary)';
-    }
-  });
-});
