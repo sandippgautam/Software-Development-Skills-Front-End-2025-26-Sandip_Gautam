@@ -7,9 +7,9 @@
 
 ## Demo Video Link
 
-> 🎥 **Video link:** *(Upload your screen recording to YouTube, Google Drive, or OneDrive and paste the link here)*
+> 🎥 **Video link:** 
 >
-> Example: `https://youtu.be/your-video-id`
+> https://youtu.be/voKIDnQ4T9c?is=Vp0tcwGq1VRO7gCD
 
 ---
 
